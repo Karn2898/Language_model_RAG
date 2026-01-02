@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# PyCharm
+.idea/
+*.iml
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Machine Learning specific
+*.h5
+*.pkl
+*.pth
+*.ckpt
+*.pt
+models/
+checkpoints/
+data/
+datasets/
+
+# Large files
+*.csv
+*.json
+*.txt
+!requirements.txt
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+wandb/
+
+# Model outputs
+outputs/
+results/
