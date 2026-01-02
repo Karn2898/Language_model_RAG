@@ -24,6 +24,5 @@ A Python-based Retrieval-Augmented Generation system that enhances language mode
 git clone <your-repo-url>
 cd Language_model_RAG
 python -m venv venv
-**2. Create and activate virtual environment:**
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
+
+
