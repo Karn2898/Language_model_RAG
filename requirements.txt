@@ -17,5 +17,5 @@ faiss-cpu
 
 streamlit
 
-numpy
+NumPy
 pandas
