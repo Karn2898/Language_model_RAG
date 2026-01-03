@@ -1,71 +1,110 @@
-
-
 import streamlit as st
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_community.llms import Ollama
-from langchain_community.chains import RetrievalQA
+from lang_wrapper import MyCustomLLM
 
-st.set_page_config(page_title="Local RAG Agent")
-st.title(" Local RAG Agent")
+st.set_page_config(page_title="Custom LLM RAG Agent", page_icon="")
+st.title(" Custom LLM RAG Agent")
+st.markdown("Ask questions about your uploaded documents using a custom-trained LLM")
 
-
-@st.cache_resource
-def load_embeddings():
-    return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-
-
-embeddings = load_embeddings()
 
 
 @st.cache_resource
-def load_llm():
-    try:
-        return Ollama(model="llama3.2", temperature=0.7)
-    except Exception as e:
-        st.error(f"Error: {e}")
-        return None
+def load_model():
+    return MyCustomLLM("my_llm_weights.pth", "model_config.json")
 
 
-llm = load_llm()
-
-if llm is None:
-    st.error(" Ollama not running! Start Ollama and run: `ollama pull llama3.2`")
+try:
+    llm = load_model()
+    st.sidebar.success(" Model loaded successfully!")
+except Exception as e:
+    st.error(f" Error loading model: {e}")
     st.stop()
-else:
-    st.success("Model loaded!")
 
-st.sidebar.header("Knowledge Base")
-uploaded_file = st.sidebar.file_uploader("Upload Notes (.txt)", type="txt")
+st.sidebar.header(" Upload Knowledge Base")
+uploaded_file = st.sidebar.file_uploader("Upload a text file", type="txt")
 
 if uploaded_file:
-    raw_text = uploaded_file.read().decode("utf-8")
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    texts = text_splitter.split_text(raw_text)
-    st.sidebar.success(f" {len(texts)} chunks created")
 
-    with st.spinner("Building knowledge base..."):
+    raw_text = uploaded_file.read().decode("utf-8")
+
+    text_splitter = CharacterTextSplitter(
+        chunk_size=500,
+        chunk_overlap=50,
+        separator="\n"
+    )
+    texts = text_splitter.split_text(raw_text)
+
+    st.sidebar.info(f"Document split into {len(texts)} chunks")
+
+    with st.spinner("Creating knowledge base..."):
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         db = FAISS.from_texts(texts, embeddings)
 
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=db.as_retriever(search_kwargs={"k": 3})
-    )
+    st.sidebar.success(" Knowledge base ready!")
+
+
+    def ask_question(question, k=3):
+
+        docs = db.similarity_search(question, k=k)
+
+        context = "\n\n".join([f"Document {i + 1}:\n{doc.page_content}"
+                               for i, doc in enumerate(docs)])
+
+
+        prompt = f"""Based on the following context, answer the question.
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:"""
+
+        answer = llm(prompt)
+
+        return answer, docs
+
+  
+
 
     st.divider()
-    query = st.text_input(" Ask a question:")
 
-    if query:
-        with st.spinner("Thinking..."):
-            try:
-                response = qa_chain.run(query)
-                st.write("###  Answer:")
-                st.write(response)
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("Ask a question about your document"):
+        # Add user message to chat
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                answer, source_docs = ask_question(prompt)
+
+            st.markdown(answer)
+
+            with st.expander(" View Sources"):
+                for i, doc in enumerate(source_docs):
+                    st.markdown(f"**Source {i + 1}:**")
+                    st.text(doc.page_content[:300] + "...")
+                    st.divider()
+
+        st.session_state.messages.append({"role": "assistant", "content": answer})
+
 else:
-    st.info(" Upload a text file to start!")
+    st.info(" Please upload a document to start asking questions")
+
+    st.subheader(" Demo Mode")
+    demo_prompt = st.text_input("Test the LLM directly (without RAG):")
+    if demo_prompt:
+        with st.spinner("Generating..."):
+            response = llm(demo_prompt)
+        st.write("**Response:**")
+        st.write(response)
