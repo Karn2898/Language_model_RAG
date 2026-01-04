@@ -12,7 +12,7 @@ st.markdown("Ask questions about your uploaded documents using a custom-trained 
 
 @st.cache_resource
 def load_model():
-    return MyCustomLLM("my_llm_weights.pth", "model_config.json")
+    return MyCustomLLM("model/my_llm_weights.pth", "model/model_config.json")
 
 
 try:
