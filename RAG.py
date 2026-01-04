@@ -40,14 +40,16 @@ if uploaded_file:
 
     with st.spinner("Creating knowledge base..."):
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        db = FAISS.from_texts(texts, embeddings)
+        st.session_state.db = FAISS.from_texts(texts, embeddings)
+
 
     st.sidebar.success(" Knowledge base ready!")
 
 
     def ask_question(question, k=3):
 
-        docs = db.similarity_search(question, k=k)
+        docs = st.session_state.db.similarity_search(question, k=k)
+
 
         context = "\n\n".join([f"Document {i + 1}:\n{doc.page_content}"
                                for i, doc in enumerate(docs)])
