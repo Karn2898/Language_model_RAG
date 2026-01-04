@@ -1,6 +1,6 @@
 #  A Language Model using GPT-2 architecture
 
-# Language Model RAG
+
 
 A Python-based Retrieval-Augmented Generation system that enhances language model responses by retrieving relevant information from external knowledge sources.
 
