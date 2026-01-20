@@ -55,6 +55,8 @@ python lang_wrapper.py
 
 ```text
 Language_model_RAG/
+
+
 ├── model_architecture.py  # Core RAG model implementation
 ├── lang_wrapper.py        # Language model interface
 ├── requirements.txt       # Project dependencies
