@@ -4,27 +4,6 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
 from lang_wrapper import MyCustomLLM
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-import streamlit as st
-
-@st.cache_resource
-def load_vectorstore(data):
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50
-    )
-
-    docs = text_splitter.split_documents(data)
-
-    embeddings = HuggingFaceEmbeddings(
-        model_name="all-MiniLM-L6-v2"
-    )
-
-    return FAISS.from_documents(docs, embeddings)
-
-db = load_vectorstore(data)
-
 
 st.set_page_config(page_title="Custom LLM RAG Agent", page_icon="")
 st.title(" Custom LLM RAG Agent")
