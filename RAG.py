@@ -3,6 +3,13 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
 from lang_wrapper import MyCustomLLM
+@st.cache_resource
+def load_vectorstore():
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    docs = text_splitter.split_documents(data)
+    return FAISS.from_documents(docs, embeddings)
+
+db = load_vectorstore()
 
 st.set_page_config(page_title="Custom LLM RAG Agent", page_icon="")
 st.title(" Custom LLM RAG Agent")
@@ -12,7 +19,7 @@ st.markdown("Ask questions about your uploaded documents using a custom-trained 
 
 @st.cache_resource
 def load_model():
-    return MyCustomLLM("model/my_llm_weights.pth", "model/model_config.json")
+    return MyCustomLLM("model/weights.pth", "model/model_config.json")
 
 
 try:
