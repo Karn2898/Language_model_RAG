@@ -1,6 +1,6 @@
 #  A Language Model using GPT-2 architecture
 
-# Language Model RAG
+
 
 A Python-based Retrieval-Augmented Generation system that enhances language model responses by retrieving relevant information from external knowledge sources.
 
@@ -55,6 +55,8 @@ python lang_wrapper.py
 
 ```text
 Language_model_RAG/
+
+
 ├── model_architecture.py  # Core RAG model implementation
 ├── lang_wrapper.py        # Language model interface
 ├── requirements.txt       # Project dependencies

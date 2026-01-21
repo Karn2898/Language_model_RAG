@@ -1,21 +1,17 @@
 
-torch>=2.0.0
+python==3.10.9
+
+torch==2.1.2
+transformers==4.38.2
+sentence-transformers==2.5.1
+
+langchain==0.1.20
+langchain-core==0.1.52
+langchain-community==0.0.38
+langchain-text-splitters==0.0.1
+langsmith==0.1.31
+
+pydantic==1.10.13
+faiss-cpu==1.7.4
 
 
-langchain==0.2.16
-langchain-community==0.2.16
-langchain-core
-langchain-text-splitters
-
-
-sentence-transformers
-transformers
-
-
-faiss-cpu
-
-
-streamlit
-
-NumPy
-pandas
