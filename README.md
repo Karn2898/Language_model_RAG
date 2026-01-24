@@ -1,7 +1,5 @@
 #  A Language Model using GPT-2 architecture
 
-
-
 A Python-based Retrieval-Augmented Generation system that enhances language model responses by retrieving relevant information from external knowledge sources.
 <img width="2068" height="1592" alt="NoteGPT-Sequence Diagram-1769025967483" src="https://github.com/user-attachments/assets/1a06d79a-9284-44c1-a7f3-fd0f44cb98f1" />
 
