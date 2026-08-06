@@ -13,7 +13,7 @@ A Python-based Retrieval-Augmented Generation system that enhances language mode
 
 ## Installation
 
-### Prerequisites
+### Prerequisites 
 - Python 3.8 or higher
 - pip package manager
 
